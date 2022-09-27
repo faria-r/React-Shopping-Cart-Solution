@@ -17,7 +17,7 @@ const Shop = () => {
        const  savedCart = [];
         // console.log(storedCart);
         for (const id in storedCart){
-            const addedProduct = products.find(product => product.id);
+            const addedProduct = products.find(product => product.id === id);
             if(addedProduct){
                const quantity= storedCart[id];
                addedProduct.quantity = quantity;
@@ -28,11 +28,22 @@ const Shop = () => {
         setcart(savedCart);
     },[products])
     //sending full product as parameter
-    const handleAddToCart = (product)=>{
-        console.log(product);
-        const newCart = [...cart,product];
+    const handleAddToCart = (selectedProduct)=>{
+        console.log(selectedProduct);
+        let newCart = [];
+        const exist = cart.find(product => product.id === selectedProduct.id);
+        if(!exist){
+            selectedProduct.quantity=1;
+            newCart=[...cart,selectedProduct];
+        }
+        else{
+            const rest = cart.filter(product => product.id !== selectedProduct.id);
+            exist.quantity=exist.quantity + 1;
+            newCart = [...rest,exist]
+        }
+        
         setcart(newCart);
-        addToDb(product.id)
+        addToDb(selectedProduct.id)
        }
     return (
         <div className="shop-container">
